@@ -1,9 +1,9 @@
-import { EventType } from "../event-type/event-type";
-import { NetworkSniffer } from "../services/network-sniffer";
+import { EventType } from '../event-type/event-type';
+import { NetworkSniffer } from '../services/network-sniffer';
 
 const networkSniffer = new NetworkSniffer();
 let currentTab: number | null = null;
-console.log("Background js!!!");
+console.log('Background js!!!');
 chrome.action.onClicked.addListener((tab) => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
@@ -17,6 +17,7 @@ chrome.action.onClicked.addListener((tab) => {
   });
 });
 
+// on change tab listener
 chrome.tabs.onActivated.addListener((activeInfo) => {
   const tabId = activeInfo.tabId;
   // const windowId = activeInfo.windowId;
@@ -28,7 +29,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     return;
   }
   if (isActiveTab) {
-    console.log("dodo sam");
+    console.log('dodo sam');
     networkSniffer.addEventListeners();
   }
   // Do something with the tabId or windowId
@@ -37,7 +38,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log({ message });
   if (message.type === EventType.startRecording) {
-    console.log("starting recording");
+    console.log('starting recording');
     // screenRecorder.start();
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
@@ -50,7 +51,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
   }
   if (message.type === EventType.stopRecording) {
-    console.log("stop recording");
+    console.log('stop recording');
     networkSniffer.stop();
     // screenRecorder.stop();
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

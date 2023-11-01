@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "noPropertyAccessFromIndexSignature": false,
+    "strictPropertyInitialization": false,
     "paths": {
       "@sniffer/domain": ["packages/domain/src/index.ts"],
       "@sniffer/infrastructure": ["packages/infrastructure/src/index.ts"]

@@ -1,7 +1,5 @@
-import { RecordingModels } from "./IRecording";
+import { IRecordingController, MethodType } from "@sniffer/domain";
 
 export interface IRecordingService {
-  createRecording(
-    params: RecordingModels.CreateRecording.IRequestDTO
-  ): Promise<{ url: string }>;
+  generateUrl: MethodType<IRecordingController["generateUrl"]>;
 }

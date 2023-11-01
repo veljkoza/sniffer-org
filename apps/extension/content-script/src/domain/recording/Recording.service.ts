@@ -1,18 +1,25 @@
-import axios from "axios";
-import { RecordingModels } from "./IRecording";
-import { IRecordingService } from "./IRecording.service";
+import axios from 'axios';
+import { IRecordingService } from './IRecording.service';
+import {
+  MethodType,
+  RecordingController,
+  RecordingModels,
+} from '@sniffer/domain';
+
+const API_URL = 'https://sniffer-api.onrender.com';
+console.log({ process: API_URL });
 
 class RecordingService implements IRecordingService {
-  async createRecording(
-    params: RecordingModels.CreateRecording.IRequestDTO
-  ): Promise<{ url: string }> {
-    const res = await axios.post<{ url: string }>(
-      "http://localhost:4000/recording/generate-url",
+  generateUrl: MethodType<RecordingController['generateUrl']> = async (
+    params
+  ) => {
+    const res = await axios.post<RecordingModels.GenerateUrl.IResponseDTO>(
+      `${API_URL}/recording/generate-url`,
       params
     );
 
     return res.data;
-  }
+  };
 }
 
 const recordingService = new RecordingService();

@@ -1,4 +1,4 @@
-import { recordingService } from "../domain/recording/Recording.service";
+import { recordingService } from '../domain/recording/Recording.service';
 
 const services = {
   recording: recordingService,
