@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "noPropertyAccessFromIndexSignature": false,
+    "paths": {
+      "@sniffer/domain": ["packages/domain/src/index.ts"],
+      "@sniffer/infrastructure": ["packages/infrastructure/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
