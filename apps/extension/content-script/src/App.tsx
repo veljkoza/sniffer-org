@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { EventType } from '../../event-type/event-type';
 import { ScreenRecorder } from '../../services/screen-recorder';
 import { services } from './_services/services';
+import { frontendServices } from '@sniffer/frontend-services';
 import { RecordingModels } from '@sniffer/domain';
 const screenRecorder = new ScreenRecorder();
 
@@ -37,7 +38,7 @@ function App() {
               screenRecording: res.base64,
             };
             setIsLoading(true);
-            services.recording
+            frontendServices.recording
               .generateUrl(payload)
               .then((res) => {
                 setData(res);

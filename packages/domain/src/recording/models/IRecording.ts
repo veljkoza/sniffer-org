@@ -1,4 +1,5 @@
-import { Recording } from "@sniffer/infrastructure";
+/* eslint-disable @typescript-eslint/no-namespace */
+import { Recording } from '@sniffer/infrastructure';
 
 export namespace RecordingModels {
   export interface IRecording {
@@ -15,7 +16,7 @@ export namespace RecordingModels {
       screenRecording: string;
       networkRecording: any;
     }
-    export interface IResponseDTO extends Recording {}
+    export type IResponseDTO = Recording;
   }
 
   export namespace GenerateUrl {
@@ -37,6 +38,6 @@ export namespace RecordingModels {
       [k: string]: any;
       id: string;
     }
-    export interface IResponseDTO extends Recording {}
+    export type IResponseDTO = Recording;
   }
 }
