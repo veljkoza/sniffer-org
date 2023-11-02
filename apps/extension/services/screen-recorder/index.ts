@@ -1,1 +1,0 @@
-export { ScreenRecorder } from "./ScreenRecorder";
