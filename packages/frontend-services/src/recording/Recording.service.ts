@@ -6,8 +6,6 @@ import {
   RecordingModels,
 } from '@sniffer/domain';
 
-console.log({ process });
-
 const recordingRequestFactory = createRequestFactory('/recording');
 
 class RecordingService implements IRecordingService {

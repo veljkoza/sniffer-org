@@ -1,0 +1,62 @@
+.App {
+  text-align: center;
+  position: fixed;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+}
+
+#sniffer-content-root .container--overlay {
+  text-align: center;
+  position: fixed;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+}
+
+#sniffer-content-root .pop-up {
+  position: fixed;
+  background-color: rgb(253, 205, 173);
+  padding: 3rem;
+  border-radius: 14px;
+  z-index: 999999;
+}
+
+
+#sniffer-content-root .pop-up.top-right {
+  top: 1rem;
+  right: 1rem;
+}
+
+#sniffer-content-root .pop-up.middle {
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+#sniffer-content-root .pop-up.secondary {
+  background-color: rgb(245, 199, 140);
+}
+
+
+#sniffer-content-root .button {
+  border: unset;
+  outline: unset;
+  cursor: pointer;
+  padding: 1.5rem 3rem;
+  background-color: rgb(247, 133, 57);
+  color: rgb(250, 219, 199);
+  border-radius: 14px;
+}
+
+#sniffer-content-root .link {
+  text-decoration: unset;
+  color: rgb(247, 133, 57);
+
+}
+
+#sniffer-content-root .link:hover {
+  text-decoration: underline;
+}
