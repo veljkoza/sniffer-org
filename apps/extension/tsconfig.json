@@ -6,20 +6,18 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "resolveJsonModule": true,
-    "types": ["vite/client", "vitest"]
+    "types": ["vite/client", "vitest"],
   },
-  "files": [],
-  "include": [],
   "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
     {
       "path": "./tsconfig.app.json"
     },
     {
       "path": "./tsconfig.spec.json"
-    }
+    },
+    {
+      "path": "./tsconfig.node.json"
+    },
   ],
   "extends": "../../tsconfig.base.json"
 }

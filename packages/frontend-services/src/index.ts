@@ -1,1 +1,1 @@
-export * from './services';
+export { frontendServicesFactory } from './utils/frontend-services-factory';

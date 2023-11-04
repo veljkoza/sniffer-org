@@ -5,9 +5,9 @@ import './styles/css/common.css';
 import { useEffect, useState } from 'react';
 import { EventType } from '../../event-type/event-type';
 import { ScreenRecorder } from '../../services/screen-recorder';
-import { services } from './_services/services';
-import { frontendServices } from '@sniffer/frontend-services';
 import { RecordingModels } from '@sniffer/domain';
+import React from 'react';
+import { frontendServices } from '../../services/frontend-services';
 const screenRecorder = new ScreenRecorder();
 
 function App() {
@@ -73,7 +73,17 @@ function App() {
         </div>
       </div>
     );
-  if (isStatus('inactive')) return <></>;
+  if (isStatus('inactive'))
+    return (
+      <div
+        style={{ width: '70%', textAlign: 'center' }}
+        className="pop-up middle"
+      >
+        <a href=" " className="link" style={{ fontSize: '1.2rem' }}>
+          INACTIVE
+        </a>
+      </div>
+    );
   if (isStatus('open'))
     return (
       <div className="container--overlay">

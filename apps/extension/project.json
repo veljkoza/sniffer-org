@@ -1,7 +1,7 @@
 {
-  "name": "temppo",
+  "name": "extension",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/temppo/src",
+  "sourceRoot": "apps/extension/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/temppo"
+        "outputPath": "dist/apps/extension"
       },
       "configurations": {
         "development": {
@@ -24,15 +24,15 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "temppo:build"
+        "buildTarget": "extension:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "temppo:build:development",
+          "buildTarget": "extension:build:development",
           "hmr": true
         },
         "production": {
-          "buildTarget": "temppo:build:production",
+          "buildTarget": "extension:build:production",
           "hmr": false
         }
       }
@@ -41,14 +41,14 @@
       "executor": "@nx/vite:preview-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "temppo:build"
+        "buildTarget": "extension:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "temppo:build:development"
+          "buildTarget": "extension:build:development"
         },
         "production": {
-          "buildTarget": "temppo:build:production"
+          "buildTarget": "extension:build:production"
         }
       }
     },
@@ -57,14 +57,14 @@
       "outputs": ["{options.reportsDirectory}"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/apps/temppo"
+        "reportsDirectory": "../../coverage/apps/extension"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/temppo/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/extension/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },

@@ -1,4 +1,4 @@
-import { createRequestFactory } from '../utils';
+import { RequestFactoryType, createRequestFactory } from '../utils';
 import { IRecordingService } from './IRecording.service';
 import {
   IRecordingController,
@@ -6,14 +6,18 @@ import {
   RecordingModels,
 } from '@sniffer/domain';
 
-const recordingRequestFactory = createRequestFactory('/recording');
-
+// const recordingRequestFactory = createRequestFactory('/recording');
 class RecordingService implements IRecordingService {
+  requestFactory: RequestFactoryType;
+  constructor(apiUrl: string) {
+    this.requestFactory = createRequestFactory(`${apiUrl}/recording`);
+  }
+
   generateUrl: MethodType<IRecordingController['generateUrl']> = async (
     params
   ) => {
     const res =
-      await recordingRequestFactory<RecordingModels.GenerateUrl.IResponseDTO>({
+      await this.requestFactory<RecordingModels.GenerateUrl.IResponseDTO>({
         url: '/generate-url',
         body: params,
         method: 'post',
@@ -30,7 +34,7 @@ class RecordingService implements IRecordingService {
     params
   ) => {
     const res =
-      await recordingRequestFactory<RecordingModels.GetRecording.IResponseDTO>({
+      await this.requestFactory<RecordingModels.GetRecording.IResponseDTO>({
         url: `/get/${params.id}`,
       });
     // const res = await http.get<RecordingModels.GetRecording.IResponseDTO>(
@@ -41,6 +45,4 @@ class RecordingService implements IRecordingService {
   };
 }
 
-const recordingService = new RecordingService();
-
-export { recordingService, RecordingService };
+export { RecordingService };

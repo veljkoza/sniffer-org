@@ -6,7 +6,7 @@ import svgr from 'vite-plugin-svgr';
 import { ManifestV3Export, crx } from '@crxjs/vite-plugin';
 import manifest from './manifest.json';
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/temppo',
+  cacheDir: '../../node_modules/.vite/extension',
 
   server: {
     port: 4200,
@@ -19,8 +19,8 @@ export default defineConfig({
   },
 
   plugins: [
-    react(),
     nxViteTsPaths(),
+    react(),
     svgr({
       svgrOptions: {
         icon: true,
@@ -35,7 +35,6 @@ export default defineConfig({
   // worker: {
   //  plugins: [ nxViteTsPaths() ],
   // },
-
   test: {
     globals: true,
     cache: {

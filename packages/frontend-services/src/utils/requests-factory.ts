@@ -1,6 +1,11 @@
 import { Method, AxiosInstance, AxiosResponse } from 'axios';
+import axios from 'axios';
+
 import { http as httpService } from '../http';
 const createRequestFactory = (baseUrl?: string) => {
+  const httpService = axios.create({
+    baseURL: baseUrl,
+  });
   const requestFactory = async <T, P = undefined>({
     http = httpService,
     method = 'get',
@@ -12,7 +17,6 @@ const createRequestFactory = (baseUrl?: string) => {
     url: string;
     queryParams?: P;
   }) => {
-    http.post;
     const fn = http[method as keyof AxiosInstance] as <T>(
       url: string,
       data?: any,
@@ -28,4 +32,6 @@ const createRequestFactory = (baseUrl?: string) => {
   return requestFactory;
 };
 
-export { createRequestFactory };
+type RequestFactoryType = ReturnType<typeof createRequestFactory>;
+
+export { createRequestFactory, RequestFactoryType };
