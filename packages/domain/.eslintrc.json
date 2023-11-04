@@ -19,7 +19,7 @@
       "parser": "jsonc-eslint-parser",
       "rules": {
         "@nx/dependency-checks": "error",
-        "@typescript-eslint/no-namespace": "warn"
+        "@typescript-eslint/no-namespace": "off"
       }
     }
   ]

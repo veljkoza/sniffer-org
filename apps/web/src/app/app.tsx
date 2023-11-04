@@ -1,15 +1,21 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './app.module.css';
-import Example from './example';
-
-import NxWelcome from './nx-welcome';
+import { RecordingDetailsPage } from '../domain/recording/pages';
+import { ROUTES } from '../routes';
 
 import { Route, Routes, Link } from 'react-router-dom';
 
 export function App() {
   return (
-    <div>
-      <Example />
+    <>
+      {/* <Example /> */}
+      <Routes>
+        <Route path={ROUTES.recording.root}>
+          <Route
+            path={ROUTES.recording.details.template}
+            element={<RecordingDetailsPage />}
+          />
+        </Route>
+      </Routes>
       {/* <div role="navigation">
         <ul>
           <li>
@@ -40,7 +46,7 @@ export function App() {
         />
       </Routes> */}
       {/* END: routes */}
-    </div>
+    </>
   );
 }
 

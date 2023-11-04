@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const API_URL = 'https://sniffer-api.onrender.com';
-const API_URL = 'http://localhost:4000';
+const API_URL = 'http://localhost:5000';
 
 const http = axios.create({
   baseURL: API_URL,

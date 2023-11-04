@@ -73,17 +73,7 @@ function App() {
         </div>
       </div>
     );
-  if (isStatus('inactive'))
-    return (
-      <div
-        style={{ width: '70%', textAlign: 'center' }}
-        className="pop-up middle"
-      >
-        <a href=" " className="link" style={{ fontSize: '1.2rem' }}>
-          INACTIVE
-        </a>
-      </div>
-    );
+  if (isStatus('inactive')) return <></>;
   if (isStatus('open'))
     return (
       <div className="container--overlay">

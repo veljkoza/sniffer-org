@@ -22,7 +22,7 @@ appDataSource
     console.error('Error during Data Source initialization:', err);
   });
 
-const PORT = 4000;
+const PORT = 5000;
 const app = express();
 
 app.use(cors({ origin: '*' }));
