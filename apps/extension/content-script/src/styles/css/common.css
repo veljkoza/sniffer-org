@@ -7,6 +7,25 @@
   z-index: 9999;
 }
 
+#sniffer-content-root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  position: relative;
+  z-index: 99999999;
+}
+
+#sniffer-content-root button {
+  border: unset;
+  background: unset;
+  cursor: pointer;
+}
+
+#sniffer-content-root * {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 #sniffer-content-root .container--overlay {
   text-align: center;
   position: fixed;
@@ -18,7 +37,7 @@
 
 #sniffer-content-root .pop-up {
   position: fixed;
-  background-color: rgb(253, 205, 173);
+  background-color: #fdcdad;
   padding: 3rem;
   border-radius: 14px;
   z-index: 999999;
@@ -42,14 +61,13 @@
 
 
 #sniffer-content-root .button {
-  border: unset;
-  outline: unset;
-  cursor: pointer;
   padding: 1.5rem 3rem;
   background-color: rgb(247, 133, 57);
   color: rgb(250, 219, 199);
   border-radius: 14px;
 }
+
+
 
 #sniffer-content-root .link {
   text-decoration: unset;
@@ -59,4 +77,20 @@
 
 #sniffer-content-root .link:hover {
   text-decoration: underline;
+}
+
+#sniffer-content-root .toolbar {
+  background: #1f2624;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  color: white;
+  position: fixed;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.flex-align-center {
+  display: flex;
+  align-items: center;
 }

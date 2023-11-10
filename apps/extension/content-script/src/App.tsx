@@ -8,12 +8,16 @@ import { ScreenRecorder } from '../../services/screen-recorder';
 import { RecordingModels } from '@sniffer/domain';
 import React from 'react';
 import { frontendServices } from '../../services/frontend-services';
+import { useTimer } from '../../shared/hooks';
+import { Icons } from '../../shared/icons';
 const screenRecorder = new ScreenRecorder();
 
 function App() {
   const [uiStatus, setUiStatus] = useState<
     'inactive' | 'open' | 'recording' | 'completed'
   >('inactive');
+
+  const timer = useTimer();
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<{ url: string }>();
@@ -27,11 +31,13 @@ function App() {
             screenRecorder.setStreamId(message.streamId);
           }
           if (message.type === EventType.recordingStarted) {
+            timer.start();
             screenRecorder.capture();
             setUiStatus('recording');
           }
           if (message.type === EventType.recordingCompleted) {
             const res = await screenRecorder.stop();
+            timer.stop();
             // const base64 = await screenRecorder.getBase64();
             const payload: RecordingModels.CreateRecording.IRequestDTO = {
               networkRecording: message.requestsArray,
@@ -86,11 +92,17 @@ function App() {
     );
   if (isStatus('recording'))
     return (
-      <div className="pop-up top-right">
+      <div className="toolbar">
+        <p>{timer.formattedTime}</p>
         <button className="button" onClick={() => stop()}>
-          Stop
+          <Icons.Stop />
         </button>
       </div>
+      // <div className="pop-up top-right">
+      //   <button className="button" onClick={() => stop()}>
+      //     Stop
+      //   </button>
+      // </div>
     );
   if (isStatus('completed'))
     return (
@@ -98,7 +110,12 @@ function App() {
         style={{ width: '70%', textAlign: 'center' }}
         className="pop-up middle"
       >
-        <a href=" " className="link" style={{ fontSize: '1.2rem' }}>
+        <a
+          href={data?.url}
+          target="_blank"
+          className="link"
+          style={{ fontSize: '1.2rem' }}
+        >
           {data?.url}
         </a>
       </div>

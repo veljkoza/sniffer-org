@@ -15,6 +15,17 @@ module.exports = {
       fontFamily: {
         sans: ['Inter var', 'sans-serif'],
       },
+      colors: {
+        developerTools: {
+          table: {
+            background: '#202124',
+            headerBg: '#292a2d',
+            border: '#494c50',
+            rowEvenBg: '#242424',
+            rowOddBg: '#333333',
+          },
+        },
+      },
     },
   },
   plugins: [],

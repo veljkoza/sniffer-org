@@ -1,11 +1,17 @@
+import { ITimer } from '../timer/ITimer';
+import { Timer } from '../timer/Timer';
+
 export class NetworkSnifferRepository {
   isRecording = false;
   requests = [] as any[];
   requestsMap: { [k: string]: any } = {};
-  constructor() {}
+  timer: ITimer;
+  constructor(timer: ITimer = new Timer()) {
+    this.timer = timer;
+  }
 
   #arrayBufferToString = (buffer: BufferSource) => {
-    let decoder = new TextDecoder("utf-8");
+    const decoder = new TextDecoder('utf-8');
     return decoder.decode(buffer);
   };
 
@@ -17,18 +23,23 @@ export class NetworkSnifferRepository {
 
   onBeforeRequest = (details: any) => {
     this.requests.push(details.url);
+    const startsAt = this.timer.getElapsedTime();
+    console.log('UUUIP', { startsAt });
+    console.log({ startsAt });
+    details.startsAt = startsAt;
+
     this.requestsMap[details.requestId] = details;
     console.log({ requests: this.requestsMap });
 
     if (
-      details.method === "POST" &&
+      details.method === 'POST' &&
       details.requestBody &&
       details.requestBody.raw &&
       details.requestBody.raw[0]
     ) {
-      let buffer = details.requestBody.raw[0].bytes;
+      const buffer = details.requestBody.raw[0].bytes;
       if (buffer) {
-        let jsonBody = this.arrayBufferToJson(buffer);
+        const jsonBody = this.arrayBufferToJson(buffer);
         this.requestsMap[details.requestId].requestBody = jsonBody;
       }
     }
@@ -62,6 +73,7 @@ export class NetworkSnifferRepository {
   };
 
   startRecording = () => {
+    this.timer.start();
     this.isRecording = true;
     this.requests = [];
     this.requestsMap = {};
@@ -69,6 +81,8 @@ export class NetworkSnifferRepository {
 
   stopRecording = () => {
     this.isRecording = false;
+    this.timer.stop();
+    this.timer.reset();
   };
 
   getState = () => {

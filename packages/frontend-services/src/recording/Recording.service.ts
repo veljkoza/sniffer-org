@@ -37,9 +37,15 @@ class RecordingService implements IRecordingService {
       await this.requestFactory<RecordingModels.GetRecording.IResponseDTO>({
         url: `/get/${params.id}`,
       });
+
+    const sortedNetworkRequests = res.data.networkRecording.sort((a, b) =>
+      a.startsAt < b.startsAt ? -1 : 1
+    );
     // const res = await http.get<RecordingModels.GetRecording.IResponseDTO>(
     //   `/recording/get/${params.id}`
     // );
+
+    res.data.networkRecording = sortedNetworkRequests;
 
     return res.data;
   };
