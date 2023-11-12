@@ -1,15 +1,16 @@
 /// <reference types="chrome" />
 /// <reference types="vite-plugin-svgr/client" />
 
-import './styles/css/common.css';
+// Styles
+import './styles/css/index.css';
 import { useEffect, useState } from 'react';
 import { EventType } from '../../event-type/event-type';
 import { ScreenRecorder } from '../../services/screen-recorder';
 import { RecordingModels } from '@sniffer/domain';
-import React from 'react';
 import { frontendServices } from '../../services/frontend-services';
 import { useTimer } from '../../shared/hooks';
 import { Icons } from '../../shared/icons';
+import { Toolbar } from './components';
 const screenRecorder = new ScreenRecorder();
 
 function App() {
@@ -70,10 +71,10 @@ function App() {
 
   if (isLoading)
     return (
-      <div className="container--overlay">
+      <div className="text-center fixed inset-0 h-full w-full z-[9999]">
         <div
           style={{ width: '70%', textAlign: 'center' }}
-          className="pop-up middle"
+          className="fixed bg-primary bg-opacity-40 p-12 rounded-2xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
           <p className="link">Loading...</p>
         </div>
@@ -82,9 +83,12 @@ function App() {
   if (isStatus('inactive')) return <></>;
   if (isStatus('open'))
     return (
-      <div className="container--overlay">
-        <div className="pop-up top-right">
-          <button className="button" onClick={() => start()}>
+      <div className="text-center fixed inset-0 h-full w-full z-[9999]">
+        <div className="fixed bg-orange-200 p-12 rounded-2xl top-4 right-4">
+          <button
+            className="px-12 py-6 bg-primary text-white rounded-lg"
+            onClick={() => start()}
+          >
             Start
           </button>
         </div>
@@ -92,12 +96,12 @@ function App() {
     );
   if (isStatus('recording'))
     return (
-      <div className="toolbar">
+      <Toolbar>
         <p>{timer.formattedTime}</p>
-        <button className="button" onClick={() => stop()}>
-          <Icons.Stop />
+        <button onClick={() => stop()}>
+          <Icons.Stop className="h-8 w-8 text-primary" />
         </button>
-      </div>
+      </Toolbar>
       // <div className="pop-up top-right">
       //   <button className="button" onClick={() => stop()}>
       //     Stop
@@ -108,14 +112,9 @@ function App() {
     return (
       <div
         style={{ width: '70%', textAlign: 'center' }}
-        className="pop-up middle"
+        className="fixed bg-orange-200 p-12 rounded-2xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       >
-        <a
-          href={data?.url}
-          target="_blank"
-          className="link"
-          style={{ fontSize: '1.2rem' }}
-        >
+        <a href={data?.url} target="_blank" className="text-primary text-lg">
           {data?.url}
         </a>
       </div>
@@ -125,7 +124,7 @@ function App() {
     <div>
       <div
         style={{ width: '70%', textAlign: 'center' }}
-        className="pop-up middle"
+        className="fixed bg-orange-200 p-12 rounded-2xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       >
         <a href=" " className="link" style={{ fontSize: '1.2rem' }}>
           Already active
