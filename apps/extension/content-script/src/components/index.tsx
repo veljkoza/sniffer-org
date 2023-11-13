@@ -1,1 +1,2 @@
-export * from './Toolbar/Toolbar';
+export * from './Toolbar';
+export * from './Backdrop';

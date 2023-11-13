@@ -3,14 +3,15 @@
 
 // Styles
 import './styles/css/index.css';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { EventType } from '../../event-type/event-type';
 import { ScreenRecorder } from '../../services/screen-recorder';
 import { RecordingModels } from '@sniffer/domain';
 import { frontendServices } from '../../services/frontend-services';
 import { useTimer } from '../../shared/hooks';
 import { Icons } from '../../shared/icons';
-import { Toolbar } from './components';
+import { Backdrop, Toolbar } from './components';
+import { UrlContainer } from './components/UrlContainer';
 const screenRecorder = new ScreenRecorder();
 
 function App() {
@@ -63,11 +64,48 @@ function App() {
     init();
   }, []);
 
-  const isStatus = (status: typeof uiStatus) => uiStatus === status;
   const start = () =>
     chrome.runtime.sendMessage({ type: EventType.startRecording });
   const stop = () =>
     chrome.runtime.sendMessage({ type: EventType.stopRecording });
+
+  const statusMap: Record<typeof uiStatus, ReactNode> = {
+    inactive: <></>,
+    open: (
+      <>
+        <Backdrop />
+        <div className="text-center fixed inset-0 h-full w-full z-[9999]">
+          <div className="fixed bg-orange-200 p-12 rounded-2xl top-4 right-4">
+            <button
+              className="px-12 py-6 bg-primary text-white rounded-lg"
+              onClick={() => start()}
+            >
+              Start
+            </button>
+          </div>
+        </div>
+      </>
+    ),
+    recording: (
+      <Toolbar>
+        <p>{timer.formattedTime}</p>
+        <button onClick={() => stop()}>
+          <Icons.Stop className="h-8 w-8 text-primary" />
+        </button>
+      </Toolbar>
+    ),
+    completed: (
+      <>
+        <Backdrop onClick={() => setUiStatus('inactive')} />
+        {data?.url && (
+          <UrlContainer
+            url={data.url}
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          />
+        )}
+      </>
+    ),
+  };
 
   if (isLoading)
     return (
@@ -80,46 +118,9 @@ function App() {
         </div>
       </div>
     );
-  if (isStatus('inactive')) return <></>;
-  if (isStatus('open'))
-    return (
-      <div className="text-center fixed inset-0 h-full w-full z-[9999]">
-        <div className="fixed bg-orange-200 p-12 rounded-2xl top-4 right-4">
-          <button
-            className="px-12 py-6 bg-primary text-white rounded-lg"
-            onClick={() => start()}
-          >
-            Start
-          </button>
-        </div>
-      </div>
-    );
-  if (isStatus('recording'))
-    return (
-      <Toolbar>
-        <p>{timer.formattedTime}</p>
-        <button onClick={() => stop()}>
-          <Icons.Stop className="h-8 w-8 text-primary" />
-        </button>
-      </Toolbar>
-      // <div className="pop-up top-right">
-      //   <button className="button" onClick={() => stop()}>
-      //     Stop
-      //   </button>
-      // </div>
-    );
-  if (isStatus('completed'))
-    return (
-      <div
-        style={{ width: '70%', textAlign: 'center' }}
-        className="fixed bg-orange-200 p-12 rounded-2xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-      >
-        <a href={data?.url} target="_blank" className="text-primary text-lg">
-          {data?.url}
-        </a>
-      </div>
-    );
 
+  const currentScreen = statusMap[uiStatus];
+  if (currentScreen) return currentScreen;
   return (
     <div>
       <div
