@@ -28,7 +28,17 @@ export default defineConfig({
       },
     }),
     // Build Chrome Extension
-    crx({ manifest } as any),
+    crx({
+      manifest: {
+        ...manifest,
+        web_accessible_resources: [
+          {
+            resources: ['monkeyPatch.js'],
+            matches: ['<all_urls>'],
+          },
+        ],
+      },
+    } as any),
   ],
 
   // Uncomment this if you are using workers.

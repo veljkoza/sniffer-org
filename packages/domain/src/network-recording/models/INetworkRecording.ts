@@ -21,7 +21,9 @@ namespace NetworkRecordingModels {
     requestHeaders: HttpHeader[];
     responseHeaders: HttpHeader[];
     documentLifecycle: string;
+    requestBody: any;
     startsAt: number;
+    response: any;
   }
 }
 

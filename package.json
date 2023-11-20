@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build:extension": "cd apps/extension && npm run build && cd ../../"
+    "serve": "nx build extension && nx run-many --target=serve --exclude=extension"
   },
   "private": true,
   "dependencies": {

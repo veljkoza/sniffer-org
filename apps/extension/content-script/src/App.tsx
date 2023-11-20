@@ -12,7 +12,17 @@ import { useTimer } from '../../shared/hooks';
 import { Icons } from '../../shared/icons';
 import { Backdrop, Toolbar } from './components';
 import { UrlContainer } from './components/UrlContainer';
+import { injectMonkeyPatch } from '../utils/inject-monkey-patch';
 const screenRecorder = new ScreenRecorder();
+
+document.addEventListener(EventType.requestDetectedInHostPage, function (e) {
+  console.log({ e });
+  // Now, send this data to your service worker
+  chrome.runtime.sendMessage({
+    type: EventType.requestSentToServiceWorker,
+    payload: (e as CustomEvent).detail,
+  });
+});
 
 function App() {
   const [uiStatus, setUiStatus] = useState<
@@ -33,6 +43,7 @@ function App() {
             screenRecorder.setStreamId(message.streamId);
           }
           if (message.type === EventType.recordingStarted) {
+            injectMonkeyPatch();
             timer.start();
             screenRecorder.capture();
             setUiStatus('recording');
@@ -120,7 +131,7 @@ function App() {
     );
 
   const currentScreen = statusMap[uiStatus];
-  if (currentScreen) return currentScreen;
+  if (currentScreen) return <>{currentScreen}</>;
   return (
     <div>
       <div

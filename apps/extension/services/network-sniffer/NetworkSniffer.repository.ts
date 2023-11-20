@@ -96,4 +96,8 @@ export class NetworkSnifferRepository {
     const arr = Object.values(this.requestsMap);
     return arr;
   };
+
+  updateRequestResponse = (id: string, response: any) => {
+    this.requestsMap[id].response = response;
+  };
 }

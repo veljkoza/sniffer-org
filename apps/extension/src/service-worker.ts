@@ -1,3 +1,4 @@
+import { TRequestSentToServiceWorkerPayload } from '../content-script/utils/monkey-patch.types';
 import { EventType } from '../event-type/event-type';
 import { NetworkSniffer } from '../services/network-sniffer';
 
@@ -53,7 +54,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === EventType.stopRecording) {
     console.log('stop recording');
     networkSniffer.stop();
-    // screenRecorder.stop();
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
       console.log({
@@ -66,4 +66,49 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       });
     });
   }
+  if (message.type === EventType.requestSentToServiceWorker) {
+    const payload: TRequestSentToServiceWorkerPayload = message.payload;
+    const request = findRequest(payload);
+
+    networkSniffer
+      .getRepository()
+      .updateRequestResponse(request.requestId, JSON.parse(payload.response));
+  }
 });
+
+const findRequest = (payload: TRequestSentToServiceWorkerPayload) => {
+  const requests = networkSniffer.getRepository().getRequestsArray();
+  const index = requests.findIndex((req) => {
+    const areTimestampsEqual = areDatesEqualIgnoringMillis(
+      new Date(req.timeStamp).toISOString(),
+      payload.startTime
+    );
+
+    const isPayloadEqual = JSON.stringify(req.requestBody) === payload.payload;
+    const isStatusEqual = req.statusCode === payload.status;
+    const isUrlEqual = req.url === payload.url;
+
+    return areTimestampsEqual && isPayloadEqual && isStatusEqual && isUrlEqual;
+  });
+
+  return requests[index];
+};
+
+function areDatesEqualIgnoringMillis(
+  isoDate1: string,
+  isoDate2: string
+): boolean {
+  // Parse the dates
+  const date1 = new Date(isoDate1);
+  const date2 = new Date(isoDate2);
+
+  // Compare each component
+  return (
+    date1.getUTCFullYear() === date2.getUTCFullYear() &&
+    date1.getUTCMonth() === date2.getUTCMonth() &&
+    date1.getUTCDate() === date2.getUTCDate() &&
+    date1.getUTCHours() === date2.getUTCHours() &&
+    date1.getUTCMinutes() === date2.getUTCMinutes() &&
+    date1.getUTCSeconds() === date2.getUTCSeconds()
+  );
+}
