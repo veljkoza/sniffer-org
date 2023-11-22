@@ -1,11 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Network Tracker 2.0",
+  "name": "Network Tracker 3.0",
   "version": "1.0",
   "description": "Tracks network requests",
   "permissions": [
-    "http://localhost:4000/",
-    "https://sniffer-api.onrender.com/",
     "tabCapture",
     "webRequest",
     "webRequestBlocking",
@@ -27,14 +25,18 @@
     "default_icon": "logo192.png"
   },
   "icons": {},
-  "content_security_policy":{
+  "content_security_policy": {
     "script-src": "'self' 'unsafe-eval'; object-src 'self';",
-    "default-src": "'self' http://localhost:4000;"
+    "default-src": "'self' http://localhost:5000;"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content-script/src/main.tsx"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-script/src/main.tsx"
+      ],
       "media": []
     }
   ]

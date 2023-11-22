@@ -1,18 +1,35 @@
 /// <reference types="chrome" />
 /// <reference types="vite-plugin-svgr/client" />
 
-import './styles/css/common.css';
-import { useEffect, useState } from 'react';
+// Styles
+import './styles/css/index.css';
+import { ReactNode, useEffect, useState } from 'react';
 import { EventType } from '../../event-type/event-type';
 import { ScreenRecorder } from '../../services/screen-recorder';
-import { services } from './_services/services';
 import { RecordingModels } from '@sniffer/domain';
+import { frontendServices } from '../../services/frontend-services';
+import { useTimer } from '../../shared/hooks';
+import { Icons } from '../../shared/icons';
+import { Backdrop, Toolbar } from './components';
+import { UrlContainer } from './components/UrlContainer';
+import { injectMonkeyPatch } from '../utils/inject-monkey-patch';
 const screenRecorder = new ScreenRecorder();
+
+document.addEventListener(EventType.requestDetectedInHostPage, function (e) {
+  console.log({ e });
+  // Now, send this data to your service worker
+  chrome.runtime.sendMessage({
+    type: EventType.requestSentToServiceWorker,
+    payload: (e as CustomEvent).detail,
+  });
+});
 
 function App() {
   const [uiStatus, setUiStatus] = useState<
     'inactive' | 'open' | 'recording' | 'completed'
   >('inactive');
+
+  const timer = useTimer();
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<{ url: string }>();
@@ -26,18 +43,21 @@ function App() {
             screenRecorder.setStreamId(message.streamId);
           }
           if (message.type === EventType.recordingStarted) {
+            injectMonkeyPatch();
+            timer.start();
             screenRecorder.capture();
             setUiStatus('recording');
           }
           if (message.type === EventType.recordingCompleted) {
             const res = await screenRecorder.stop();
+            timer.stop();
             // const base64 = await screenRecorder.getBase64();
             const payload: RecordingModels.CreateRecording.IRequestDTO = {
               networkRecording: message.requestsArray,
               screenRecording: res.base64,
             };
             setIsLoading(true);
-            services.recording
+            frontendServices.recording
               .generateUrl(payload)
               .then((res) => {
                 setData(res);
@@ -55,59 +75,68 @@ function App() {
     init();
   }, []);
 
-  const isStatus = (status: typeof uiStatus) => uiStatus === status;
   const start = () =>
     chrome.runtime.sendMessage({ type: EventType.startRecording });
   const stop = () =>
     chrome.runtime.sendMessage({ type: EventType.stopRecording });
 
+  const statusMap: Record<typeof uiStatus, ReactNode> = {
+    inactive: <></>,
+    open: (
+      <>
+        <Backdrop />
+        <div className="text-center fixed inset-0 h-full w-full z-[9999]">
+          <div className="fixed bg-orange-200 p-12 rounded-2xl top-4 right-4">
+            <button
+              className="px-12 py-6 bg-primary text-white rounded-lg"
+              onClick={() => start()}
+            >
+              Start
+            </button>
+          </div>
+        </div>
+      </>
+    ),
+    recording: (
+      <Toolbar>
+        <p>{timer.formattedTime}</p>
+        <button onClick={() => stop()}>
+          <Icons.Stop className="h-8 w-8 text-primary" />
+        </button>
+      </Toolbar>
+    ),
+    completed: (
+      <>
+        <Backdrop onClick={() => setUiStatus('inactive')} />
+        {data?.url && (
+          <UrlContainer
+            url={data.url}
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          />
+        )}
+      </>
+    ),
+  };
+
   if (isLoading)
     return (
-      <div className="container--overlay">
+      <div className="text-center fixed inset-0 h-full w-full z-[9999]">
         <div
           style={{ width: '70%', textAlign: 'center' }}
-          className="pop-up middle"
+          className="fixed bg-primary bg-opacity-40 p-12 rounded-2xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
           <p className="link">Loading...</p>
         </div>
       </div>
     );
-  if (isStatus('inactive')) return <></>;
-  if (isStatus('open'))
-    return (
-      <div className="container--overlay">
-        <div className="pop-up top-right">
-          <button className="button" onClick={() => start()}>
-            Start
-          </button>
-        </div>
-      </div>
-    );
-  if (isStatus('recording'))
-    return (
-      <div className="pop-up top-right">
-        <button className="button" onClick={() => stop()}>
-          Stop
-        </button>
-      </div>
-    );
-  if (isStatus('completed'))
-    return (
-      <div
-        style={{ width: '70%', textAlign: 'center' }}
-        className="pop-up middle"
-      >
-        <a href=" " className="link" style={{ fontSize: '1.2rem' }}>
-          {data?.url}
-        </a>
-      </div>
-    );
 
+  const currentScreen = statusMap[uiStatus];
+  if (currentScreen) return <>{currentScreen}</>;
   return (
     <div>
       <div
         style={{ width: '70%', textAlign: 'center' }}
-        className="pop-up middle"
+        className="fixed bg-orange-200 p-12 rounded-2xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       >
         <a href=" " className="link" style={{ fontSize: '1.2rem' }}>
           Already active

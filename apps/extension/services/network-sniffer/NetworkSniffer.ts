@@ -1,4 +1,18 @@
-import { NetworkSnifferRepository } from "./NetworkSniffer.repository";
+import { NetworkSnifferRepository } from './NetworkSniffer.repository';
+
+const resourceTypes: chrome.webRequest.ResourceType[] = [
+  'main_frame',
+  'xmlhttprequest',
+  'script',
+  'image',
+  'font',
+  'object',
+  'ping',
+  'csp_report',
+  'media',
+  'websocket',
+  'other',
+];
 
 export class NetworkSniffer {
   networkSnifferRepository: NetworkSnifferRepository;
@@ -14,34 +28,34 @@ export class NetworkSniffer {
   addEventListeners = () => {
     chrome.webRequest.onBeforeRequest.addListener(
       this.networkSnifferRepository.onBeforeRequest,
-      { urls: ["<all_urls>"], types: ["main_frame", "xmlhttprequest"] },
-      ["requestBody"]
+      { urls: ['<all_urls>'], types: resourceTypes },
+      ['requestBody']
     );
 
     chrome.webRequest.onSendHeaders.addListener(
       this.networkSnifferRepository.onSendHeaders,
-      { urls: ["<all_urls>"], types: ["main_frame", "xmlhttprequest"] },
-      ["requestHeaders"]
+      { urls: ['<all_urls>'], types: resourceTypes },
+      ['requestHeaders']
     );
 
     chrome.webRequest.onHeadersReceived.addListener(
       this.networkSnifferRepository.onHeadersReceived,
-      { urls: ["<all_urls>"], types: ["main_frame", "xmlhttprequest"] },
-      ["responseHeaders"]
+      { urls: ['<all_urls>'], types: resourceTypes },
+      ['responseHeaders']
     );
 
     chrome.webRequest.onCompleted.addListener(
       this.networkSnifferRepository.onCompleted,
       {
-        urls: ["<all_urls>"],
-        types: ["main_frame", "xmlhttprequest"],
+        urls: ['<all_urls>'],
+        types: resourceTypes,
       }
     );
     chrome.webRequest.onErrorOccurred.addListener(
       this.networkSnifferRepository.onErrorOccurred,
       {
-        urls: ["<all_urls>"],
-        types: ["main_frame", "xmlhttprequest"],
+        urls: ['<all_urls>'],
+        types: resourceTypes,
       }
     );
   };

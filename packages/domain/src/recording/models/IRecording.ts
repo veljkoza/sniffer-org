@@ -1,31 +1,33 @@
-import { Recording } from "@sniffer/infrastructure";
+/* eslint-disable @typescript-eslint/no-namespace */
+import { Recording } from '@sniffer/infrastructure';
+import { NetworkRecordingModels } from '../../network-recording';
 
 export namespace RecordingModels {
   export interface IRecording {
     screenRecording: string;
-    networkRecording: any;
+    networkRecording: NetworkRecordingModels.INetworkRecording;
   }
 
   export namespace CreateRecording {
     export interface IRequestDTO {
       screenRecording: string;
-      networkRecording: any;
+      networkRecording: NetworkRecordingModels.INetworkRecording[];
     }
     export interface IRepositoryPayload {
       screenRecording: string;
-      networkRecording: any;
+      networkRecording: NetworkRecordingModels.INetworkRecording[];
     }
-    export interface IResponseDTO extends Recording {}
+    export type IResponseDTO = Recording;
   }
 
   export namespace GenerateUrl {
     export interface IRequestDTO {
       screenRecording: string;
-      networkRecording: any;
+      networkRecording: NetworkRecordingModels.INetworkRecording[];
     }
     export interface IRepositoryPayload {
       screenRecording: string;
-      networkRecording: any;
+      networkRecording: NetworkRecordingModels.INetworkRecording[];
     }
     export interface IResponseDTO {
       url: string;
@@ -37,6 +39,10 @@ export namespace RecordingModels {
       [k: string]: any;
       id: string;
     }
-    export interface IResponseDTO extends Recording {}
+    export interface IResponseDTO {
+      id: string;
+      screenRecording: string;
+      networkRecording: NetworkRecordingModels.INetworkRecording[];
+    }
   }
 }

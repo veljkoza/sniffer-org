@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;700&display=swap');
+
+:root {
+    font-family: 'Inter', sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+    :root {
+        font-family: 'Inter var', sans-serif;
+    }
+}
+
+html,
+body,
+#root {
+    height: 100%
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* You can add global styles to this file, and also import other style files */

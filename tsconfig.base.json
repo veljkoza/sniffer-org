@@ -17,7 +17,9 @@
     "noPropertyAccessFromIndexSignature": false,
     "strictPropertyInitialization": false,
     "paths": {
+      "@sniffer/ui": ["packages/ui/src/index.ts"],
       "@sniffer/domain": ["packages/domain/src/index.ts"],
+      "@sniffer/frontend-services": ["packages/frontend-services/src/index.ts"],
       "@sniffer/infrastructure": ["packages/infrastructure/src/index.ts"]
     }
   },

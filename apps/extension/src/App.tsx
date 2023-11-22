@@ -1,9 +1,9 @@
 /// <reference types="chrome" />
 /// <reference types="vite-plugin-svgr/client" />
 
-import Logo from "./Logo";
-import "./App.css";
-import { EventType } from "../event-type/event-type";
+import Logo from './Logo';
+import './App.css';
+import { EventType } from '../event-type/event-type';
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
   const tabId = tabs[0].id;
   chrome.tabCapture.getMediaStreamId(
@@ -14,7 +14,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         streamId: streamId,
         tabId,
       };
-      console.log("POPUP!!");
+      console.log('POPUP!!');
       if (tabId) chrome.tabs.sendMessage(tabId, message);
       window.close();
     }

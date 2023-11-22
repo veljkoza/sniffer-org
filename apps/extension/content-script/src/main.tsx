@@ -1,13 +1,13 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import "./main.css";
-import App from "./App";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import './main.css';
+import App from './App';
 
-const appID = "sniffer-content-root";
+const appID = 'sniffer-content-root';
 
-const body = document.querySelector("body");
+const body = document.querySelector('body');
 
-const app = document.createElement("div");
+const app = document.createElement('div');
 
 app.id = appID;
 
