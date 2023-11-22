@@ -9,6 +9,19 @@ export function App() {
     <>
       {/* <Example /> */}
       <Routes>
+        <Route
+          path={ROUTES.index.root}
+          element={
+            <main className="flex justify-center items-center w-full h-screen bg-slate-800">
+              <h1 className="text-3xl text-center text-white">Snifferchina</h1>
+            </main>
+          }
+        >
+          <Route
+            path={ROUTES.recording.details.template}
+            element={<RecordingDetailsPage />}
+          />
+        </Route>
         <Route path={ROUTES.recording.root}>
           <Route
             path={ROUTES.recording.details.template}

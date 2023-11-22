@@ -1,4 +1,7 @@
 export const ROUTES = {
+  index: {
+    root: '/',
+  },
   recording: {
     root: '/recording',
     details: {
