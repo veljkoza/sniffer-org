@@ -2,6 +2,22 @@ import { PropsWithChildren, useState } from 'react';
 import { DeveloperToolsTable } from './table';
 import { Tabs, TabsTypes } from '../../../../shared/components/tabs/Tabs';
 import { twMerge } from 'tailwind-merge';
+import { CopyToClipboardPopover, useClipboard } from '@sniffer/ui';
+
+const downloadObjectAsJson = (exportObj: any, exportName = 'requests') => {
+  console.log('tyest', { exportObj });
+  const dataStr =
+    'data:text/json;charset=utf-8,' +
+    encodeURIComponent(JSON.stringify(exportObj, null, 4));
+
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute('href', dataStr);
+  downloadAnchorNode.setAttribute('download', exportName + '.json');
+  document.body.appendChild(downloadAnchorNode); // required for firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+};
+
 type HttpHeader = {
   name: string;
   value: string;
@@ -33,6 +49,8 @@ const DeveloperTools = ({ data }: DeveloperToolsTypes.Props) => {
   const openRequestDetails = (request: DeveloperToolsTypes.TableData) => {
     setSelectedRequest(request);
   };
+
+  const { copyContent } = useClipboard();
 
   console.log({ data });
 
@@ -77,7 +95,12 @@ const DeveloperTools = ({ data }: DeveloperToolsTypes.Props) => {
         data: req.payload,
         label: 'Preview',
       },
-      response: { data: req.response, label: 'Response' },
+      response: {
+        data: {
+          responsePayload: { data: req.response, label: 'Response Payload' },
+        },
+        label: 'Response',
+      },
     }));
 
   const renderRequestDetailsChildren = (
@@ -99,7 +122,31 @@ const DeveloperTools = ({ data }: DeveloperToolsTypes.Props) => {
 
   console.log({ requestDetailsData });
 
+  const stringifyFormattedJson = (json: { [k: string]: any }) =>
+    JSON.stringify(json, null, 4);
+
   const closeRequestDetails = () => setSelectedRequest(undefined);
+  const payloadJSON = requestDetailsData
+    ? stringifyFormattedJson(
+        requestDetailsData.payload.data.requestPayload.data
+      )
+    : '';
+  const responseJSON = requestDetailsData
+    ? stringifyFormattedJson(
+        requestDetailsData.response.data.responsePayload.data
+      )
+    : '';
+
+  const summary = {
+    url: requestDetailsData?.headers.general.data.url.data,
+    method: requestDetailsData?.headers.general.data.method.data,
+    status: requestDetailsData?.headers.general.data.status.data,
+    payload: requestDetailsData?.payload.data.requestPayload.data,
+    response: requestDetailsData?.response.data.responsePayload.data,
+    responseHeaders: requestDetailsData?.headers.responseHeaders.data,
+    requestHeaders: requestDetailsData?.headers.requestHeaders.data,
+  };
+
   return (
     <div className="h-full relative">
       <DeveloperToolsTable data={data} onSelected={openRequestDetails} />
@@ -112,7 +159,15 @@ const DeveloperTools = ({ data }: DeveloperToolsTypes.Props) => {
           <div className="bg-developerTools-tabs-headerBg shadow-lg inset-0 left-1/4 absolute  h-full font-sans font-light text-left overflow-y-auto">
             <Tabs
               renderHeader={(headerData) => (
-                <DeveloperToolsTabsHeader data={headerData} />
+                <div className="flex justify-between">
+                  <DeveloperToolsTabsHeader data={headerData} />
+                  <button
+                    className="bg-orange-500 text-white p-2 text-xs font-bold"
+                    onClick={() => downloadObjectAsJson(summary)}
+                  >
+                    Generate Summary
+                  </button>
+                </div>
               )}
               tabs={{
                 headers: {
@@ -128,9 +183,16 @@ const DeveloperTools = ({ data }: DeveloperToolsTypes.Props) => {
                       </RequestDetailsSection>
                       <RequestDetailsSection
                         label={requestDetailsData.headers.requestHeaders.label}
+                        onClick={() =>
+                          copyContent(
+                            stringifyFormattedJson(
+                              requestDetailsData.headers.requestHeaders.data
+                            )
+                          )
+                        }
                       >
                         <div>
-                          {requestDetailsData.headers.requestHeaders.data.map(
+                          {requestDetailsData.headers.requestHeaders.data?.map(
                             (header) => (
                               <div className="text-gray-400 p-2 px-4 ">
                                 <span className="font-semibold">
@@ -145,9 +207,16 @@ const DeveloperTools = ({ data }: DeveloperToolsTypes.Props) => {
                         </div>
                       </RequestDetailsSection>
                       <RequestDetailsSection
+                        onClick={() => {
+                          copyContent(
+                            stringifyFormattedJson(
+                              requestDetailsData.headers.responseHeaders.data
+                            )
+                          );
+                        }}
                         label={requestDetailsData.headers.responseHeaders.label}
                       >
-                        {requestDetailsData.headers.responseHeaders.data.map(
+                        {requestDetailsData.headers.responseHeaders.data?.map(
                           (header) => (
                             <div className="text-gray-400 p-2 px-4">
                               <span className="font-semibold">
@@ -168,20 +237,27 @@ const DeveloperTools = ({ data }: DeveloperToolsTypes.Props) => {
                   component: (
                     <div className="h-full">
                       <RequestDetailsSection
+                        onClick={() => copyContent(payloadJSON)}
                         label={
                           requestDetailsData.payload.data.requestPayload.label
                         }
                       >
-                        <RequestDetailsSectionBox>
-                          <code>
-                            {JSON.stringify(
-                              requestDetailsData.payload.data.requestPayload
-                                .data,
-                              null,
-                              4
-                            )}
-                          </code>
-                        </RequestDetailsSectionBox>
+                        <code>{payloadJSON}</code>
+                      </RequestDetailsSection>
+                    </div>
+                  ),
+                },
+                response: {
+                  label: requestDetailsData.response.label,
+                  component: (
+                    <div className="h-full">
+                      <RequestDetailsSection
+                        onClick={() => copyContent(responseJSON)}
+                        label={
+                          requestDetailsData.response.data.responsePayload.label
+                        }
+                      >
+                        <code>{responseJSON}</code>
                       </RequestDetailsSection>
                     </div>
                   ),
@@ -196,7 +272,7 @@ const DeveloperTools = ({ data }: DeveloperToolsTypes.Props) => {
 };
 
 const RequestDetailsSection = (
-  props: { label: string } & PropsWithChildren
+  props: { label: string; onClick?: () => void } & PropsWithChildren
 ) => {
   return (
     <section className=" pb-3">
@@ -204,7 +280,9 @@ const RequestDetailsSection = (
         <div className="p-4 py-2 ">
           <h1 className="text-md text-gray-300 font-semibold">{props.label}</h1>
         </div>
-        <RequestDetailsSectionBox>{props.children}</RequestDetailsSectionBox>
+        <RequestDetailsSectionBox onClick={props.onClick}>
+          {props.children}
+        </RequestDetailsSectionBox>
       </article>
     </section>
   );
@@ -277,7 +355,7 @@ namespace RequestDetailsTypes {
     payload: {
       label: string;
       data: {
-        requestPayload: Child<string>;
+        requestPayload: Child<any>;
       };
     };
     preview: {
@@ -286,7 +364,9 @@ namespace RequestDetailsTypes {
     };
     response: {
       label: string;
-      data: any;
+      data: {
+        responsePayload: Child<any>;
+      };
     };
   };
 }

@@ -48,11 +48,13 @@ const DeveloperToolsTable = ({
             <TableRow
               data={getRowData(row)}
               onClick={() => onSelected(row)}
-              className={` ${
+              className={twMerge(
                 (index + 1) % 2 === 0
                   ? 'bg-developerTools-table-rowEvenBg'
-                  : 'bg-developerTools-table-rowOddBg'
-              } hover:bg-opacity-80 cursor-pointer`}
+                  : 'bg-developerTools-table-rowOddBg',
+                'hover:bg-opacity-80 cursor-pointer',
+                row.status >= 400 ? 'text-red-500' : ''
+              )}
             />
           ))}
         </tbody>
