@@ -48,6 +48,16 @@ const DeveloperToolsTable = ({
             <TableRow
               data={getRowData(row)}
               onClick={() => onSelected(row)}
+              render={{
+                name: (data) => (
+                  <TableCell className="border-l items-center border-developerTools-table-border flex gap-1 border-r max-w-xs overflow-x-hidden text-ellipsis">
+                    <span className="p-1.5 rounded-lg bg-slate-400 text-white block mr-2 text-xs">
+                      {row.status}
+                    </span>
+                    {data}
+                  </TableCell>
+                ),
+              }}
               className={twMerge(
                 (index + 1) % 2 === 0
                   ? 'bg-developerTools-table-rowEvenBg'
